@@ -25,9 +25,9 @@ def upgrade() -> None:
     # Add new columns to worker_tasks for tracking separation
     with op.batch_alter_table('worker_tasks', schema=None) as batch_op:
         batch_op.add_column(sa.Column('tracking_started_at', sa.DateTime(), nullable=True))
-        batch_op.add_column(sa.Column('claude_started_at', sa.DateTime(), nullable=True))
+        batch_op.add_column(sa.Column('ai_started_at', sa.DateTime(), nullable=True))
         batch_op.add_column(sa.Column('total_tracking_time_seconds', sa.Integer(), nullable=True, default=0))
-        batch_op.add_column(sa.Column('total_claude_time_seconds', sa.Integer(), nullable=True, default=0))
+        batch_op.add_column(sa.Column('total_ai_time_seconds', sa.Integer(), nullable=True, default=0))
 
     # Create task_attachments table
     op.create_table('task_attachments',
@@ -72,9 +72,9 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint('id')
     )
     with op.batch_alter_table('ai_assistant_sessions', schema=None) as batch_op:
-        batch_op.create_index('ix_claude_session_task', ['task_id'], unique=False)
-        batch_op.create_index('ix_claude_session_chat', ['chat_session_id'], unique=False)
-        batch_op.create_index('ix_claude_session_status', ['status'], unique=False)
+        batch_op.create_index('ix_ai_session_task', ['task_id'], unique=False)
+        batch_op.create_index('ix_ai_session_chat', ['chat_session_id'], unique=False)
+        batch_op.create_index('ix_ai_session_status', ['status'], unique=False)
 
     # Create task_time_entries table
     op.create_table('task_time_entries',
@@ -85,10 +85,10 @@ def upgrade() -> None:
         sa.Column('started_at', sa.DateTime(), nullable=False),
         sa.Column('ended_at', sa.DateTime(), nullable=True),
         sa.Column('duration_seconds', sa.Integer(), nullable=True, default=0),
-        sa.Column('claude_session_id', sa.Integer(), nullable=True),
+        sa.Column('ai_session_id', sa.Integer(), nullable=True),
         sa.Column('notes', sa.Text(), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
-        sa.ForeignKeyConstraint(['claude_session_id'], ['ai_assistant_sessions.id'], ),
+        sa.ForeignKeyConstraint(['ai_session_id'], ['ai_assistant_sessions.id'], ),
         sa.ForeignKeyConstraint(['task_id'], ['worker_tasks.id'], ),
         sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
         sa.PrimaryKeyConstraint('id')
@@ -109,9 +109,9 @@ def downgrade() -> None:
 
     # Drop ai_assistant_sessions table
     with op.batch_alter_table('ai_assistant_sessions', schema=None) as batch_op:
-        batch_op.drop_index('ix_claude_session_status')
-        batch_op.drop_index('ix_claude_session_chat')
-        batch_op.drop_index('ix_claude_session_task')
+        batch_op.drop_index('ix_ai_session_status')
+        batch_op.drop_index('ix_ai_session_chat')
+        batch_op.drop_index('ix_ai_session_task')
     op.drop_table('ai_assistant_sessions')
 
     # Drop task_attachments table
@@ -122,7 +122,7 @@ def downgrade() -> None:
 
     # Remove columns from worker_tasks
     with op.batch_alter_table('worker_tasks', schema=None) as batch_op:
-        batch_op.drop_column('total_claude_time_seconds')
+        batch_op.drop_column('total_ai_time_seconds')
         batch_op.drop_column('total_tracking_time_seconds')
-        batch_op.drop_column('claude_started_at')
+        batch_op.drop_column('ai_started_at')
         batch_op.drop_column('tracking_started_at')

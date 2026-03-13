@@ -66,9 +66,9 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint('id')
     )
 
-    # Create claude_jobs table
+    # Create ai_jobs table
     op.create_table(
-        'claude_jobs',
+        'ai_jobs',
         sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
         sa.Column('job_id', sa.String(length=64), nullable=False),
         sa.Column('project', sa.String(length=255), nullable=False),
@@ -87,8 +87,8 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('job_id')
     )
-    op.create_index('ix_claude_jobs_job_id', 'claude_jobs', ['job_id'], unique=True)
-    op.create_index('ix_claude_jobs_project', 'claude_jobs', ['project'], unique=False)
+    op.create_index('ix_ai_jobs_job_id', 'ai_jobs', ['job_id'], unique=True)
+    op.create_index('ix_ai_jobs_project', 'ai_jobs', ['project'], unique=False)
 
     # Create ai_sdk_sessions table
     op.create_table(
@@ -127,7 +127,7 @@ def downgrade() -> None:
     # Drop tables in reverse order (respecting foreign keys)
     op.drop_table('chat_messages')
     op.drop_table('ai_sdk_sessions')
-    op.drop_table('claude_jobs')
+    op.drop_table('ai_jobs')
     op.drop_table('task_comments')
     op.drop_table('tasks')
     op.drop_table('task_lists')

@@ -32,7 +32,7 @@ def upgrade() -> None:
         sa.Column('error_message', sa.Text(), nullable=True),
         sa.Column('project_type', sa.String(length=20), nullable=True),
         sa.Column('has_git', sa.Boolean(), nullable=True, server_default='0'),
-        sa.Column('has_claude_md', sa.Boolean(), nullable=True, server_default='0'),
+        sa.Column('has_config_md', sa.Boolean(), nullable=True, server_default='0'),
         sa.Column('has_readme', sa.Boolean(), nullable=True, server_default='0'),
         sa.Column('has_mcp_config', sa.Boolean(), nullable=True, server_default='0'),
         sa.Column('setup_chat_session_id', sa.String(length=255), nullable=True),

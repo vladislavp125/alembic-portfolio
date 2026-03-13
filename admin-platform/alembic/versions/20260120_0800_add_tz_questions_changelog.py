@@ -67,7 +67,7 @@ def upgrade() -> None:
         sa.Column('old_value', sa.Text(), nullable=True),
         sa.Column('new_value', sa.Text(), nullable=True),
         sa.Column('metadata_json', sa.Text(), nullable=True),
-        sa.Column('source', sa.String(50), server_default='claude', nullable=True),
+        sa.Column('source', sa.String(50), server_default='ai', nullable=True),
         sa.Column('chat_session_id', sa.String(255), nullable=True),
         sa.Column('tool_use_id', sa.String(100), nullable=True),
         sa.Column('created_at', sa.DateTime(), nullable=True),
